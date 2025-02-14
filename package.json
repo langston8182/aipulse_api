@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "bestzip build.zip * --ignore=node_modules/aws-sdk/* --ignore=.git",
+    "deploy": "npm run build && echo 'Deploying zip file...'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.6",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "bestzip": "^2.2.1"
+  }
+}
