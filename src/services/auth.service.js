@@ -4,7 +4,7 @@ const qs = require('querystring');
 const jwt = require('jsonwebtoken');
 const {UserInfo} = require("../models/userinfo.model");
 
-const COGNITO_DOMAIN = 'https://auth.cyrilmarchive.com';
+const COGNITO_DOMAIN = process.env.COGNITO_DOMAIN;
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET;
 const REDIRECT_URI = process.env.COGNITO_REDIRECT_URI;
