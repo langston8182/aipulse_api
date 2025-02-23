@@ -1,10 +1,12 @@
 const Newsletter = require('../models/newsletter.model');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * Create a new newsletter email.
  */
 async function createNewsletter(newsletterData) {
     const newsletter = new Newsletter(newsletterData);
+    newsletter.confirm_token = uuidv4()
     return await newsletter.save();
 }
 

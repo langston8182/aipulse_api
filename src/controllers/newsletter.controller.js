@@ -4,6 +4,11 @@ const {
     deleteNewsletter,
     unsubscribeNewsletter
 } = require('../services/newsletter.service');
+const {
+    sendEmail
+} = require('../services/email.service')
+const {Email} = require("../models/email.model");
+const {interpolate} = require("../utils/utils");
 const NEWSLETTER_REDIRECT = process.env.NEWSLETTER_REDIRECT;
 
 /**
@@ -17,6 +22,17 @@ async function newsletterController(httpMethod, path, body, queryParams) {
 
     if (httpMethod === 'POST' && path === '/newsletter') {
         const created = await createNewsletter(body);
+        const variables = {
+            confirmationUrl: "https://www.ai-pulse-news.com&token=" + created.confirm_token,
+            siteTitle: "ai-pulse-news"
+        }
+        const emailModel = new Email(
+            body.email,
+            "Confirmez votre inscription à ai-pulse-news.com !",
+            interpolate(process.env.EMAIL_CONFIRMATION_HTML_BODY, variables),
+            interpolate(process.env.EMAIL_CONFIRMATION_HTML_BODY, variables)
+        );
+        await sendEmail(emailModel)
         return { statusCode: 201, body: JSON.stringify(created) };
     }
 
