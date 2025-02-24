@@ -11,6 +11,9 @@ const {
 const {Email} = require("../models/email.model");
 const {interpolate} = require("../utils/utils");
 const NEWSLETTER_REDIRECT = process.env.NEWSLETTER_REDIRECT;
+const NEWSLETTER_CONFIRM_REDIRECT = process.env.NEWSLETTER_CONFIRM_REDIRECT;
+const EMAIL_NEWSLETTER_HTML_BODY = process.env.EMAIL_NEWSLETTER_HTML_BODY
+const EMAIL_NEWSLETTER_TEXT_BODY = process.env.EMAIL_NEWSLETTER_TEXT_BODY
 
 /**
  * Contrôleur pour router la requête selon la méthode et le chemin.
@@ -24,7 +27,7 @@ async function newsletterController(httpMethod, path, body, queryParams) {
     if (httpMethod === 'POST' && path === '/newsletter') {
         const created = await createNewsletter(body);
         const variables = {
-            confirmationUrl: "https://www.ai-pulse-news.com/newlsetter/confirm&token=" + created.confirm_token,
+            confirmationUrl: "https://api.ai-pulse-news.com/newsletter/confirm?token=" + created.confirm_token + "&amp;email=" + created.email,
             siteTitle: "ai-pulse-news"
         }
         const emailModel = new Email(
@@ -38,14 +41,34 @@ async function newsletterController(httpMethod, path, body, queryParams) {
     }
 
     // Ajout de la gestion de la confirmation
-    if (httpMethod === 'POST' && path === '/newsletter/confirm') {
+    if (httpMethod === 'GET' && path === '/newsletter/confirm') {
         try {
-            const { email, token } = body;
+            const { email, token } = queryParams || {};
             if (!email || !token) {
                 return { statusCode: 400, body: JSON.stringify({ message: "Email et token sont requis" }) };
             }
             const updatedNewsletter = await confirmNewsletter(email, token);
-            return { statusCode: 200, body: JSON.stringify(updatedNewsletter) };
+
+            const variables = {
+                unsubscribeUrl: "https://api.ai-pulse-news.com/newsletter/unsubscribe?token=" + token + "&amp;email=" + email,
+                siteTitle: "ai-pulse-news"
+            }
+            const emailModel = new Email(
+                email,
+                "Confirmez votre inscription à ai-pulse-news.com !",
+                interpolate(process.env.EMAIL_NEWSLETTER_HTML_BODY, variables),
+                interpolate(process.env.EMAIL_NEWSLETTER_TEXT_BODY, variables)
+            );
+            console.log('email : ', email)
+            await sendEmail(emailModel, true)
+
+            return {
+                statusCode: 302,
+                headers: {
+                    Location: NEWSLETTER_CONFIRM_REDIRECT
+                },
+                body: JSON.stringify({updatedNewsletter})
+            };
         } catch (error) {
             return { statusCode: 400, body: JSON.stringify({ message: error.message }) };
         }

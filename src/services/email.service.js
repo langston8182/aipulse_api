@@ -1,5 +1,6 @@
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { Email } = require('../models/email.model');
+const { Newsletter } = require('../models/newsletter.model')
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION || 'eu-west-3' });
 
@@ -24,6 +25,18 @@ async function sendEmail(emailData, bypassStatus = false) {
     // Vérification des propriétés requises
     if (!emailModel.to || !emailModel.subject || (!emailModel.htmlBody && !emailModel.textBody)) {
         throw new Error('Missing required email parameters');
+    }
+
+    if (!bypassStatus) {
+        const existingNewsletter = await Newsletter.findOne({ email: emailModel.to });
+
+        if (!existingNewsletter) {
+            throw new Error(`L'email ${emailModel.to} n'existe pas dans la base de données.`);
+        }
+
+        if (existingNewsletter.status !== "CONFIRMED") {
+            throw new Error(`L'email ${emailModel.to} n'a pas le statut CONFIRMED.`);
+        }
     }
 
     const params = {
