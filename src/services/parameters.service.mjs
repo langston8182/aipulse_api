@@ -1,11 +1,12 @@
-const { SSMClient, GetParametersByPathCommand, PutParameterCommand } = require("@aws-sdk/client-ssm");
-const { Parameter } = require('../models/parameters.model');
+import { SSMClient, GetParametersByPathCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
+import { Parameter } from "../models/parameters.model.mjs";
+
 const ssmClient = new SSMClient({ region: process.env.AWS_REGION || "eu-west-3" });
 
 /**
  * Get all parameters.
  */
-async function getAllParameters() {
+export async function getAllParameters() {
     const params = [];
     let nextToken;
 
@@ -25,13 +26,14 @@ async function getAllParameters() {
         }
         nextToken = response.NextToken;
     } while (nextToken);
+
     return params;
 }
 
 /**
  * Modify a parameter by name.
  */
-async function updateParameters(parameters) {
+export async function updateParameters(parameters) {
     const results = [];
 
     for (const param of parameters) {
@@ -53,8 +55,3 @@ async function updateParameters(parameters) {
 
     return results;
 }
-
-module.exports = {
-    getAllParameters,
-    updateParameters
-};

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const newsletterSchema = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
@@ -7,4 +7,4 @@ const newsletterSchema = new mongoose.Schema({
     created_date: Date
 });
 
-module.exports = mongoose.model('Newsletter', newsletterSchema);
+export const Newsletter = mongoose.model('Newsletter', newsletterSchema);

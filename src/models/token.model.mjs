@@ -1,4 +1,4 @@
-class Token {
+export class Token {
     constructor(data) {
         this.access_token = data.access_token;
         this.id_token = data.id_token;
@@ -7,5 +7,3 @@ class Token {
         this.token_type = data.token_type;
     }
 }
-
-module.exports = { Token };

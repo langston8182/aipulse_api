@@ -1,16 +1,13 @@
-const {
-    getAllParameters,
-    updateParameters
-} = require('../services/parameters.service');
+import { getAllParameters, updateParameters } from '../services/parameters.service.mjs';
 
-async function parametersController(httpMethod, path, body) {
+export async function parametersController(httpMethod, path, body) {
     if (httpMethod === 'GET' && path === '/admin/parameters') {
         const parameters = await getAllParameters();
-        return {statusCode: 200, body: JSON.stringify(parameters)};
+        return { statusCode: 200, body: JSON.stringify(parameters) };
     }
 
     if (httpMethod === 'PUT' && path === '/admin/parameters') {
-        const { parameters } = body
+        const { parameters } = body;
 
         if (!Array.isArray(parameters)) {
             return {
@@ -19,7 +16,7 @@ async function parametersController(httpMethod, path, body) {
             };
         }
 
-        const updateResults = await updateParameters(parameters);  // Passe le tableau des paramètres
+        const updateResults = await updateParameters(parameters); // Passe le tableau des paramètres
         const hasErrors = updateResults.some(result => result.status === 'error');
 
         if (hasErrors) {
@@ -34,9 +31,5 @@ async function parametersController(httpMethod, path, body) {
     }
 
     // Route par défaut pour les requêtes non prises en charge
-    return {statusCode: 404, body: JSON.stringify({message: 'Route non trouvée'})};
+    return { statusCode: 404, body: JSON.stringify({ message: 'Route non trouvée' }) };
 }
-
-module.exports = {
-    parametersController
-};

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const articleSchema = new mongoose.Schema({
     title: String,
@@ -11,4 +11,4 @@ const articleSchema = new mongoose.Schema({
     readTime: Number
 });
 
-module.exports = mongoose.model('Article', articleSchema);
+export const Article = mongoose.model('Article', articleSchema);

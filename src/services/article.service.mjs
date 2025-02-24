@@ -1,9 +1,9 @@
-const Article = require('../models/article.model');
+import Article from '../models/article.model.mjs';
 
 /**
  * Create a new article.
  */
-async function createArticle(articleData) {
+export async function createArticle(articleData) {
     const article = new Article(articleData);
     return await article.save();
 }
@@ -11,35 +11,27 @@ async function createArticle(articleData) {
 /**
  * Get all articles.
  */
-async function getAllArticles() {
+export async function getAllArticles() {
     return Article.find({});
 }
 
 /**
  * Get article by ID.
  */
-async function getArticleById(articleId) {
+export async function getArticleById(articleId) {
     return Article.findById(articleId);
 }
 
 /**
  * Update article by ID.
  */
-async function updateArticle(articleId, updateData) {
+export async function updateArticle(articleId, updateData) {
     return Article.findOneAndUpdate({_id: articleId}, updateData, {new: true});
 }
 
 /**
  * Delete article by ID.
  */
-async function deleteArticle(articleId) {
+export async function deleteArticle(articleId) {
     return Article.findOneAndDelete({_id: articleId});
 }
-
-module.exports = {
-    createArticle,
-    getAllArticles,
-    getArticleById,
-    updateArticle,
-    deleteArticle
-};

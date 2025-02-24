@@ -1,14 +1,13 @@
-const { connectToDatabase } = require('./db');
-const { articleController } = require('./controllers/article.controller');
-const { newsletterController } = require('./controllers/newsletter.controller');
-const { parametersController } = require('./controllers/parameters.controller');
-const { emailController } = require('./controllers/email.controller');
-const { openaiController } = require('./controllers/openai.controller');
-const { imagesController } = require('./controllers/image.controller');
-const { authController } = require('./controllers/auth.controller');
+import { connectToDatabase } from './db.mjs';
+import { articleController } from './controllers/article.controller.mjs';
+import { newsletterController } from './controllers/newsletter.controller.mjs';
+import { parametersController } from './controllers/parameters.controller.mjs';
+import { emailController } from './controllers/email.controller.mjs';
+import { openaiController } from './controllers/openai.controller.mjs';
+import { imagesController } from './controllers/image.controller.mjs';
+import { authController } from './controllers/auth.controller.mjs';
 
-
-exports.handler = async (event) => {
+export async function handler(event) {
     console.log('Incoming event:', JSON.stringify(event, null, 2));
 
     // 1. Connexion MongoDB
@@ -41,8 +40,7 @@ exports.handler = async (event) => {
         result = await imagesController(httpMethod, path, body);
     } else if (path.startsWith('/auth')) {
         result = await authController(httpMethod, path, body, event.queryStringParameters, event.headers, event.cookies);
-    }
-    else {
+    } else {
         result = {
             statusCode: 404,
             body: JSON.stringify({ message: 'Not Found' }),
@@ -58,4 +56,4 @@ exports.handler = async (event) => {
             'Access-Control-Allow-Origin': '*'
         }
     };
-};
+}

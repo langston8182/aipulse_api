@@ -1,15 +1,15 @@
-const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
-const { Email } = require('../models/email.model');
-const { Newsletter } = require('../models/newsletter.model')
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { Email } from '../models/email.model.mjs';
+import { Newsletter } from '../models/newsletter.model.mjs';
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION || 'eu-west-3' });
 
 /**
  * Envoie un email en utilisant le modèle Email.
  * @param {Email} emailData - Instance de Email contenant les données de l'email.
- * @param bypassStatus - a true envoie un email sans prendre en compte le status de l'email
+ * @param {boolean} bypassStatus - Si true, envoie un email sans vérifier le statut de l'email.
  */
-async function sendEmail(emailData, bypassStatus = false) {
+export async function sendEmail(emailData, bypassStatus = false) {
     const emailModel = new Email(
         emailData.to,
         emailData.subject,
@@ -71,5 +71,3 @@ async function sendEmail(emailData, bypassStatus = false) {
     const command = new SendEmailCommand(params);
     return await sesClient.send(command);
 }
-
-module.exports = { sendEmail };

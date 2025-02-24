@@ -1,12 +1,13 @@
-const {S3Client, ListObjectsV2Command, PutObjectCommand, DeleteObjectCommand} = require("@aws-sdk/client-s3");
-const s3 = new S3Client({region: process.env.AWS_REGION || 'eu-west-3'});
+import { S3Client, ListObjectsV2Command, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+
+const s3 = new S3Client({ region: process.env.AWS_REGION || 'eu-west-3' });
 const BUCKET_NAME = process.env.BUCKET_NAME || 'votre-nom-de-bucket';
 const FOLDER = 'images';
 
 /**
  * Liste les objets (images) dans le dossier fixe.
  */
-async function listImages() {
+export async function listImages() {
     const prefix = `${FOLDER}/`;
     const command = new ListObjectsV2Command({
         Bucket: BUCKET_NAME,
@@ -27,7 +28,7 @@ async function listImages() {
  * @param {string} fileName Nom du fichier à ajouter.
  * @param {string} fileContent Contenu de l'image en base64.
  */
-async function addImage(fileName, fileContent) {
+export async function addImage(fileName, fileContent) {
     const key = `${FOLDER}/${fileName}`;
     const buffer = Buffer.from(fileContent, 'base64');
     const command = new PutObjectCommand({
@@ -43,7 +44,7 @@ async function addImage(fileName, fileContent) {
  * Supprime une image dans le dossier fixe.
  * @param {string} fileName Nom du fichier à supprimer.
  */
-async function deleteImage(fileName) {
+export async function deleteImage(fileName) {
     const key = `${FOLDER}/${fileName}`;
     const command = new DeleteObjectCommand({
         Bucket: BUCKET_NAME,
@@ -51,5 +52,3 @@ async function deleteImage(fileName) {
     });
     await s3.send(command);
 }
-
-module.exports = {listImages, addImage, deleteImage};

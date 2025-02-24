@@ -1,15 +1,15 @@
-const {
+import {
     createArticle,
     getAllArticles,
     getArticleById,
     updateArticle,
     deleteArticle
-} = require('../services/article.service');
+} from '../services/article.service.mjs';
 
 /**
  * Contrôleur pour router la requête selon la méthode et le chemin.
  */
-async function articleController(httpMethod, path, body) {
+export async function articleController(httpMethod, path, body) {
     if (httpMethod === 'GET' && path === '/articles') {
         const articles = await getAllArticles();
         return { statusCode: 200, body: JSON.stringify(articles) };
@@ -50,7 +50,3 @@ async function articleController(httpMethod, path, body) {
     // Route par défaut
     return { statusCode: 404, body: JSON.stringify({ message: 'Not found' }) };
 }
-
-module.exports = {
-    articleController
-};

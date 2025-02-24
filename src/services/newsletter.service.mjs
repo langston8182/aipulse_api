@@ -1,10 +1,10 @@
-const Newsletter = require('../models/newsletter.model');
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
+import Newsletter from '../models/newsletter.model.mjs';
 
 /**
  * Create a new newsletter email.
  */
-async function createNewsletter(newsletterData) {
+export async function createNewsletter(newsletterData) {
     const newsletter = new Newsletter({
         ...newsletterData,
         confirm_token: uuidv4(),
@@ -15,17 +15,17 @@ async function createNewsletter(newsletterData) {
 }
 
 /**
- * Get all newsletter email.
+ * Get all newsletter emails.
  */
-async function getAllNewsletter() {
+export async function getAllNewsletter() {
     return Newsletter.find({});
 }
 
 /**
  * Delete a newsletter by email.
  */
-async function deleteNewsletter(email) {
-    return Newsletter.findOneAndDelete({email: email});
+export async function deleteNewsletter(email) {
+    return Newsletter.findOneAndDelete({ email: email });
 }
 
 /**
@@ -34,7 +34,7 @@ async function deleteNewsletter(email) {
  * le statut est mis à jour en "CONFIRMED".
  * Sinon, une erreur est levée.
  */
-async function confirmNewsletter(email, token) {
+export async function confirmNewsletter(email, token) {
     const newsletter = await Newsletter.findOneAndUpdate(
         { email: email, confirm_token: token, status: "PENDING" },
         { status: "CONFIRMED" },
@@ -49,14 +49,6 @@ async function confirmNewsletter(email, token) {
 /**
  * Unsubscribe a newsletter by email and token.
  */
-async function unsubscribeNewsletter(email, token) {
-    return Newsletter.findOneAndDelete({email: email, confirm_token: token});
+export async function unsubscribeNewsletter(email, token) {
+    return Newsletter.findOneAndDelete({ email: email, confirm_token: token });
 }
-
-module.exports = {
-    createNewsletter,
-    getAllNewsletter,
-    deleteNewsletter,
-    unsubscribeNewsletter,
-    confirmNewsletter
-};

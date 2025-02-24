@@ -1,6 +1,6 @@
-const { sendEmail } = require('../services/email.service');
+import { sendEmail } from '../services/email.service.mjs';
 
-async function emailController(httpMethod, path, body) {
+export async function emailController(httpMethod, path, body) {
     if (httpMethod === 'POST' && path === '/admin/email') {
         try {
             await sendEmail(body, false);
@@ -21,8 +21,4 @@ async function emailController(httpMethod, path, body) {
             body: JSON.stringify({ message: 'Invalid request' }),
         };
     }
-}
-
-module.exports = {
-    emailController
 }

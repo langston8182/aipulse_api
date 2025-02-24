@@ -1,6 +1,6 @@
-const { listImages, addImage, deleteImage } = require('../services/image.service');
+import { listImages, addImage, deleteImage } from '../services/image.service.mjs';
 
-async function imagesController(httpMethod, path, body) {
+export async function imagesController(httpMethod, path, body) {
     if (httpMethod === 'GET') {
         // Lister les images dans le dossier fixe
         const images = await listImages();
@@ -13,8 +13,7 @@ async function imagesController(httpMethod, path, body) {
     if (httpMethod === 'POST') {
         // Ajouter une image
         // Attendu dans le body : { "fileName": "monImage.jpg", "fileContent": "<base64>" }
-        const data = body;
-        const { fileName, fileContent } = data;
+        const { fileName, fileContent } = body;
         await addImage(fileName, fileContent);
         return {
             statusCode: 200,
@@ -33,8 +32,4 @@ async function imagesController(httpMethod, path, body) {
             body: JSON.stringify({ message: 'Image supprimée' })
         };
     }
-}
-
-module.exports = {
-    imagesController
 }

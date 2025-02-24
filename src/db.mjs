@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 let isConnected = false;
 
-async function connectToDatabase(uri) {
+export async function connectToDatabase(uri) {
     if (!isConnected) {
         await mongoose.connect(uri, {
             useNewUrlParser: true,
@@ -13,7 +13,3 @@ async function connectToDatabase(uri) {
     }
     return mongoose;
 }
-
-module.exports = {
-    connectToDatabase
-};

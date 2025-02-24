@@ -1,11 +1,11 @@
-const {
+import {
     exchangeCodeForToken,
     refreshAccessToken,
     extractTokenFromCookies,
     extractUserInfoFromIdToken
-} = require('../services/auth.service');
+} from '../services/auth.service.mjs';
 
-async function authController(httpMethod, path, body, queryStringParameters, headers, cookies) {
+export async function authController(httpMethod, path, body, queryStringParameters, headers, cookies) {
     if (httpMethod === 'GET' && path === '/auth/callback') {
         const code = queryStringParameters?.code;
         if (!code) {
@@ -36,15 +36,15 @@ async function authController(httpMethod, path, body, queryStringParameters, hea
 
         // Définition des cookies
         const cookieOptions = "HttpOnly; Secure; SameSite=None; Path=/";
-        const cookies = [
+        const responseCookies = [
             `id_token=${id_token}; ${cookieOptions}`,
         ];
-        console.log("Cookies envoyés :", cookies);
+        console.log("Cookies envoyés :", responseCookies);
 
         return {
             statusCode: 200,
             headers: {
-                "Set-Cookie": cookies.join(", "),
+                "Set-Cookie": responseCookies.join(", "),
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({message: "Authentification réussie"}),
@@ -92,8 +92,8 @@ async function authController(httpMethod, path, body, queryStringParameters, hea
 
     if (httpMethod === 'POST' && path === '/auth/refresh') {
         try {
-            const cookies = headers.Cookie || headers.cookie || '';
-            const refreshToken = extractTokenFromCookies(cookies, 'refresh_token');
+            const cookiesHeader = headers.Cookie || headers.cookie || '';
+            const refreshToken = extractTokenFromCookies(cookiesHeader, 'refresh_token');
 
             if (!refreshToken) {
                 return {
@@ -125,7 +125,3 @@ async function authController(httpMethod, path, body, queryStringParameters, hea
         body: JSON.stringify({message: 'Endpoint non trouvé'}),
     };
 }
-
-module.exports = {
-    authController
-};

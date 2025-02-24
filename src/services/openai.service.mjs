@@ -1,10 +1,10 @@
-const fetch = require('node-fetch');
-const {ChatPayload} = require("../models/openai.model");
+import fetch from 'node-fetch';
+import { ChatPayload } from "../models/openai.model.mjs";
 
-async function callOpenAI(payload) {
+export async function callOpenAI(payload) {
     const apiKey = process.env.OPENAI_API_KEY;
     const openaiEndpoint = 'https://api.openai.com/v1/chat/completions';
-    const chatPayload = new ChatPayload("gpt-4o-mini", payload.messages)
+    const chatPayload = new ChatPayload("gpt-4o-mini", payload.messages);
 
     const response = await fetch(openaiEndpoint, {
         method: 'POST',
@@ -22,5 +22,3 @@ async function callOpenAI(payload) {
 
     return await response.json();
 }
-
-module.exports = { callOpenAI };
