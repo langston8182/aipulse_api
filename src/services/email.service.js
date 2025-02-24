@@ -6,8 +6,9 @@ const sesClient = new SESClient({ region: process.env.AWS_REGION || 'eu-west-3' 
 /**
  * Envoie un email en utilisant le modèle Email.
  * @param {Email} emailData - Instance de Email contenant les données de l'email.
+ * @param bypassStatus - a true envoie un email sans prendre en compte le status de l'email
  */
-async function sendEmail(emailData) {
+async function sendEmail(emailData, bypassStatus = false) {
     const emailModel = new Email(
         emailData.to,
         emailData.subject,

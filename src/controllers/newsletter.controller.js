@@ -2,7 +2,8 @@ const {
     createNewsletter,
     getAllNewsletter,
     deleteNewsletter,
-    unsubscribeNewsletter
+    unsubscribeNewsletter,
+    confirmNewsletter
 } = require('../services/newsletter.service');
 const {
     sendEmail
@@ -23,7 +24,7 @@ async function newsletterController(httpMethod, path, body, queryParams) {
     if (httpMethod === 'POST' && path === '/newsletter') {
         const created = await createNewsletter(body);
         const variables = {
-            confirmationUrl: "https://www.ai-pulse-news.com&token=" + created.confirm_token,
+            confirmationUrl: "https://www.ai-pulse-news.com/newlsetter/confirm&token=" + created.confirm_token,
             siteTitle: "ai-pulse-news"
         }
         const emailModel = new Email(
@@ -32,8 +33,22 @@ async function newsletterController(httpMethod, path, body, queryParams) {
             interpolate(process.env.EMAIL_CONFIRMATION_HTML_BODY, variables),
             interpolate(process.env.EMAIL_CONFIRMATION_HTML_BODY, variables)
         );
-        await sendEmail(emailModel)
+        await sendEmail(emailModel, true)
         return { statusCode: 201, body: JSON.stringify(created) };
+    }
+
+    // Ajout de la gestion de la confirmation
+    if (httpMethod === 'POST' && path === '/newsletter/confirm') {
+        try {
+            const { email, token } = body;
+            if (!email || !token) {
+                return { statusCode: 400, body: JSON.stringify({ message: "Email et token sont requis" }) };
+            }
+            const updatedNewsletter = await confirmNewsletter(email, token);
+            return { statusCode: 200, body: JSON.stringify(updatedNewsletter) };
+        } catch (error) {
+            return { statusCode: 400, body: JSON.stringify({ message: error.message }) };
+        }
     }
 
     if (httpMethod === 'DELETE' && path.startsWith('/newsletter/')) {

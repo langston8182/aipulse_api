@@ -3,7 +3,7 @@ const { sendEmail } = require('../services/email.service');
 async function emailController(httpMethod, path, body) {
     if (httpMethod === 'POST' && path === '/admin/email') {
         try {
-            await sendEmail(body);
+            await sendEmail(body, false);
             return {
                 statusCode: 200,
                 body: JSON.stringify({ message: 'Email sent successfully' }),

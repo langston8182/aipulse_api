@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 async function createNewsletter(newsletterData) {
     const newsletter = new Newsletter(newsletterData);
     newsletter.confirm_token = uuidv4()
+    newsletter.status = "PENDING"
     return await newsletter.save();
 }
 
@@ -24,6 +25,24 @@ async function deleteNewsletter(email) {
 }
 
 /**
+ * Confirm newsletter subscription by email and token.
+ * Si l'inscription avec le bon email, confirm_token et en statut "PENDING" existe,
+ * le statut est mis à jour en "ACCEPTED".
+ * Sinon, une erreur est levée.
+ */
+async function confirmNewsletter(email, token) {
+    const newsletter = await Newsletter.findOneAndUpdate(
+        { email: email, confirm_token: token, status: "PENDING" },
+        { status: "ACCEPTED" },
+        { new: true } // Retourne le document mis à jour
+    );
+    if (!newsletter) {
+        throw new Error("Aucune inscription trouvée avec cet email et token, ou elle a déjà été confirmée.");
+    }
+    return newsletter;
+}
+
+/**
  * Unsubscribe a newsletter by email and token.
  */
 async function unsubscribeNewsletter(email, token) {
@@ -34,5 +53,6 @@ module.exports = {
     createNewsletter,
     getAllNewsletter,
     deleteNewsletter,
-    unsubscribeNewsletter
+    unsubscribeNewsletter,
+    confirmNewsletter
 };
