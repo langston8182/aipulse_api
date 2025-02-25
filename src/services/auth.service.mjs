@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { Token } from '../models/token.model.mjs';
 import qs from 'querystring';
 import jwt from 'jsonwebtoken';

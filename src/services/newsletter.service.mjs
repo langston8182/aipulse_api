@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import Newsletter from '../models/newsletter.model.mjs';
+import { Newsletter } from '../models/newsletter.model.mjs';
 
 /**
  * Create a new newsletter email.

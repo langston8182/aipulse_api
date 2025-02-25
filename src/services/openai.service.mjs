@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { ChatPayload } from "../models/openai.model.mjs";
 
 export async function callOpenAI(payload) {

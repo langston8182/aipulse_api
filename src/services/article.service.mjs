@@ -1,4 +1,4 @@
-import Article from '../models/article.model.mjs';
+import { Article } from '../models/article.model.mjs';
 
 /**
  * Create a new article.
