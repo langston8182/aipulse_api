@@ -11,7 +11,13 @@ export async function handler(event) {
     console.log('Incoming event:', JSON.stringify(event, null, 2));
 
     // 1. Connexion MongoDB
-    await connectToDatabase(process.env.MONGODB_URI);
+    const env = process.env.ENVIRONMENT || "preprod";
+    const dbUri = env === "prod" ? process.env.MONGODB_URI_PROD : process.env.MONGODB_URI_PREPROD;
+
+    if (!dbUri) {
+        throw new Error(`Aucune URI MongoDB définie pour l'environnement ${env}`);
+    }
+    await connectToDatabase(dbUri);
 
     // 2. Extraire les infos de la requête
     const httpMethod = event.requestContext.http.method;
