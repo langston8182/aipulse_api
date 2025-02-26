@@ -17,3 +17,10 @@ export function getDynamicUrl(path) {
 
     return `https://${subdomain}${process.env.HOST}${path}`;
 }
+
+export function getDynamicUrlForAuthRedirect(path) {
+    const environment = process.env.ENVIRONMENT || "prod";  // Par défaut "prod"
+    const subdomain = environment === "preprod" ? "preprod." : "www.";
+
+    return `https://${subdomain}${process.env.HOST}${path}`;
+}

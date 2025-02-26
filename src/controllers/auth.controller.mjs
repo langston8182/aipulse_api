@@ -92,7 +92,7 @@ export async function authController(httpMethod, path, body, queryStringParamete
         };
     }
 
-    if (httpMethod === 'POST' && path === `${env}/auth/refresh`) {
+    if (httpMethod === 'POST' && path === `/${env}/auth/refresh`) {
         try {
             const cookiesHeader = headers.Cookie || headers.cookie || '';
             const refreshToken = extractTokenFromCookies(cookiesHeader, 'refresh_token');

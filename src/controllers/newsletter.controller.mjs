@@ -46,7 +46,7 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
     }
 
     // Ajout de la gestion de la confirmation
-    if (httpMethod === 'GET' && path === `${env}/newsletter/confirm`) {
+    if (httpMethod === 'GET' && path === `/${env}/newsletter/confirm`) {
         try {
             const { email, token } = queryParams || {};
             if (!email || !token) {

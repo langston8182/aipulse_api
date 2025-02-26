@@ -2,12 +2,12 @@ import { Token } from '../models/token.model.mjs';
 import qs from 'querystring';
 import jwt from 'jsonwebtoken';
 import { UserInfo } from '../models/userinfo.model.mjs';
-import {getDynamicUrl} from "../utils/utils.mjs";
+import {getDynamicUrlForAuthRedirect} from "../utils/utils.mjs";
 
 const COGNITO_DOMAIN = process.env.COGNITO_DOMAIN;
 const CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET;
-const REDIRECT_URI = getDynamicUrl("/auth/callback")
+const REDIRECT_URI = getDynamicUrlForAuthRedirect("/auth/callback")
 
 export async function exchangeCodeForToken(code) {
     const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
