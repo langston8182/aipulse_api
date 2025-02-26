@@ -8,12 +8,15 @@ import {
 
 import { sendEmail } from '../services/email.service.mjs';
 import { Email } from "../models/email.model.mjs";
-import { interpolate } from "../utils/utils.mjs";
+import {getDynamicUrl, interpolate} from "../utils/utils.mjs";
 
-const NEWSLETTER_REDIRECT = process.env.NEWSLETTER_REDIRECT;
-const NEWSLETTER_CONFIRM_REDIRECT = process.env.NEWSLETTER_CONFIRM_REDIRECT;
+const NEWSLETTER_REDIRECT = getDynamicUrl("/unsubscribe")
+const NEWSLETTER_CONFIRM_REDIRECT = getDynamicUrl("/newsletter/confirm")
 const EMAIL_NEWSLETTER_HTML_BODY = process.env.EMAIL_NEWSLETTER_HTML_BODY;
 const EMAIL_NEWSLETTER_TEXT_BODY = process.env.EMAIL_NEWSLETTER_TEXT_BODY;
+const email_uri = process.env.ENVIRONMENT === "preprod"
+    ? "https://api-preprod.ai-pulse-news.com"
+    : "https://api.ai-pulse-news.com";
 
 /**
  * Contrôleur pour router la requête selon la méthode et le chemin.
@@ -27,8 +30,9 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
 
     if (httpMethod === 'POST' && path === `/${env}/newsletter`) {
         const created = await createNewsletter(body);
+        const confirmationUrl = getDynamicUrl("")
         const variables = {
-            confirmationUrl: `https://api.ai-pulse-news.com/newsletter/confirm?token=${created.confirm_token}&amp;email=${created.email}`,
+            confirmationUrl: `${email_uri}/newsletter/confirm?token=${created.confirm_token}&amp;email=${created.email}`,
             siteTitle: "ai-pulse-news"
         };
         const emailModel = new Email(
@@ -51,7 +55,7 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
             const updatedNewsletter = await confirmNewsletter(email, token);
 
             const variables = {
-                unsubscribeUrl: `https://api.ai-pulse-news.com/newsletter/unsubscribe?token=${token}&amp;email=${email}`,
+                unsubscribeUrl: `${email_uri}/newsletter/unsubscribe?token=${token}&amp;email=${email}`,
                 siteTitle: "ai-pulse-news"
             };
             const emailModel = new Email(
