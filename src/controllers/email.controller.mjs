@@ -1,7 +1,8 @@
 import { sendEmail } from '../services/email.service.mjs';
 
 export async function emailController(httpMethod, path, body) {
-    if (httpMethod === 'POST' && path === '/admin/email') {
+    const env = process.env.ENVIRONMENT || "preprod";
+    if (httpMethod === 'POST' && path === `/${env}/admin/email`) {
         try {
             await sendEmail(body, false);
             return {

@@ -6,7 +6,9 @@ import {
 } from '../services/auth.service.mjs';
 
 export async function authController(httpMethod, path, body, queryStringParameters, headers, cookies) {
-    if (httpMethod === 'GET' && path === '/auth/callback') {
+    const env = process.env.ENVIRONMENT || "preprod";
+
+    if (httpMethod === 'GET' && path === `/${env}/auth/callback`) {
         const code = queryStringParameters?.code;
         if (!code) {
             console.error("Le paramètre 'code' est manquant");
@@ -51,7 +53,7 @@ export async function authController(httpMethod, path, body, queryStringParamete
         };
     }
 
-    if (httpMethod === 'POST' && path === '/auth/userinfo') {
+    if (httpMethod === 'POST' && path === `/${env}/auth/userinfo`) {
         try {
             console.log("Traitement de /userinfo");
             const idToken = extractTokenFromCookies(cookies);
@@ -78,7 +80,7 @@ export async function authController(httpMethod, path, body, queryStringParamete
         }
     }
 
-    if (httpMethod === 'GET' && path === '/auth/signout') {
+    if (httpMethod === 'GET' && path === `${env}/auth/signout`) {
         return {
             statusCode: 200,
             headers: {
@@ -90,7 +92,7 @@ export async function authController(httpMethod, path, body, queryStringParamete
         };
     }
 
-    if (httpMethod === 'POST' && path === '/auth/refresh') {
+    if (httpMethod === 'POST' && path === `${env}/auth/refresh`) {
         try {
             const cookiesHeader = headers.Cookie || headers.cookie || '';
             const refreshToken = extractTokenFromCookies(cookiesHeader, 'refresh_token');

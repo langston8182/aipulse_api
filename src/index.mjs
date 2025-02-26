@@ -32,19 +32,19 @@ export async function handler(event) {
 
     // 3. Appeler le contrôleur approprié en fonction du chemin
     let result;
-    if (path.startsWith('/article')) {
+    if (path.startsWith(`/${env}/articles`)) {
         result = await articleController(httpMethod, path, body);
-    } else if (path.startsWith('/newsletter')) {
+    } else if (path.startsWith(`/${env}/newsletter`)) {
         result = await newsletterController(httpMethod, path, body, event.queryStringParameters);
-    } else if (path.startsWith('/admin/parameters')) {
+    } else if (path.startsWith(`/${env}/admin/parameters`)) {
         result = await parametersController(httpMethod, path, body);
-    } else if (path.startsWith('/admin/email')) {
+    } else if (path.startsWith(`/${env}/admin/email`)) {
         result = await emailController(httpMethod, path, body);
-    } else if (path.startsWith('/admin/openai')) {
+    } else if (path.startsWith(`/${env}/admin/openai`)) {
         result = await openaiController(httpMethod, path, body);
-    } else if (path.startsWith('/admin/images')) {
+    } else if (path.startsWith(`/${env}/admin/images`)) {
         result = await imagesController(httpMethod, path, body);
-    } else if (path.startsWith('/auth')) {
+    } else if (path.startsWith(`/${env}/auth`)) {
         result = await authController(httpMethod, path, body, event.queryStringParameters, event.headers, event.cookies);
     } else {
         result = {

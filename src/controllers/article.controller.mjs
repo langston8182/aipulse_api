@@ -10,12 +10,13 @@ import {
  * Contrôleur pour router la requête selon la méthode et le chemin.
  */
 export async function articleController(httpMethod, path, body) {
-    if (httpMethod === 'GET' && path === '/articles') {
+    const env = process.env.ENVIRONMENT || "preprod";
+    if (httpMethod === 'GET' && path === `/${env}/articles`) {
         const articles = await getAllArticles();
         return { statusCode: 200, body: JSON.stringify(articles) };
     }
 
-    if (httpMethod === 'GET' && path.startsWith('/articles/')) {
+    if (httpMethod === 'GET' && path.startsWith(`/${env}/articles/`)) {
         const articleId = path.split('/').pop();
         const article = await getArticleById(articleId);
         if (!article) {
@@ -24,12 +25,12 @@ export async function articleController(httpMethod, path, body) {
         return { statusCode: 200, body: JSON.stringify(article) };
     }
 
-    if (httpMethod === 'POST' && path === '/articles') {
+    if (httpMethod === 'POST' && path === `/${env}/articles`) {
         const created = await createArticle(body);
         return { statusCode: 201, body: JSON.stringify(created) };
     }
 
-    if (httpMethod === 'PUT' && path.startsWith('/articles/')) {
+    if (httpMethod === 'PUT' && path.startsWith(`/${env}/articles/`)) {
         const articleId = path.split('/').pop();
         const updated = await updateArticle(articleId, body);
         if (!updated) {
@@ -38,7 +39,7 @@ export async function articleController(httpMethod, path, body) {
         return { statusCode: 200, body: JSON.stringify(updated) };
     }
 
-    if (httpMethod === 'DELETE' && path.startsWith('/articles/')) {
+    if (httpMethod === 'DELETE' && path.startsWith(`/${env}/articles/`)) {
         const articleId = path.split('/').pop();
         const deleted = await deleteArticle(articleId);
         if (!deleted) {

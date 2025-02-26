@@ -19,12 +19,13 @@ const EMAIL_NEWSLETTER_TEXT_BODY = process.env.EMAIL_NEWSLETTER_TEXT_BODY;
  * Contrôleur pour router la requête selon la méthode et le chemin.
  */
 export async function newsletterController(httpMethod, path, body, queryParams) {
-    if (httpMethod === 'GET' && path === '/newsletter') {
+    const env = process.env.ENVIRONMENT || "preprod";
+    if (httpMethod === 'GET' && path === `/${env}/newsletter`) {
         const newsletters = await getAllNewsletter();
         return { statusCode: 200, body: JSON.stringify(newsletters) };
     }
 
-    if (httpMethod === 'POST' && path === '/newsletter') {
+    if (httpMethod === 'POST' && path === `/${env}/newsletter`) {
         const created = await createNewsletter(body);
         const variables = {
             confirmationUrl: `https://api.ai-pulse-news.com/newsletter/confirm?token=${created.confirm_token}&amp;email=${created.email}`,
@@ -41,7 +42,7 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
     }
 
     // Ajout de la gestion de la confirmation
-    if (httpMethod === 'GET' && path === '/newsletter/confirm') {
+    if (httpMethod === 'GET' && path === `${env}/newsletter/confirm`) {
         try {
             const { email, token } = queryParams || {};
             if (!email || !token) {
@@ -74,7 +75,7 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
         }
     }
 
-    if (httpMethod === 'DELETE' && path.startsWith('/newsletter/')) {
+    if (httpMethod === 'DELETE' && path.startsWith(`/${env}/newsletter/`)) {
         const email = path.split('/').pop();
         const deleted = await deleteNewsletter(email);
         if (!deleted) {
@@ -83,7 +84,7 @@ export async function newsletterController(httpMethod, path, body, queryParams) 
         return { statusCode: 200, body: JSON.stringify({ message: 'Deleted' }) };
     }
 
-    if (httpMethod === 'GET' && path === '/newsletter/unsubscribe') {
+    if (httpMethod === 'GET' && path === `/${env}/newsletter/unsubscribe`) {
         const email = queryParams?.email;
         const token = queryParams?.token;
         const deleted = await unsubscribeNewsletter(email, token);

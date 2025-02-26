@@ -1,7 +1,8 @@
 import { callOpenAI } from "../services/openai.service.mjs";
 
 export async function openaiController(httpMethod, path, body) {
-    if (httpMethod === 'POST' && path === '/admin/openai') {
+    const env = process.env.ENVIRONMENT || "preprod";
+    if (httpMethod === 'POST' && path === `/${env}/admin/openai`) {
         try {
             const response = await callOpenAI(body);
             return { statusCode: 200, body: JSON.stringify(response) };
