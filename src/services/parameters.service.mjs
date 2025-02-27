@@ -1,4 +1,5 @@
 import { SSMClient, GetParametersByPathCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
+import { CodePipeline } from "@aws-sdk/client-codepipeline";
 import { Parameter } from "../models/parameters.model.mjs";
 
 const ssmClient = new SSMClient({ region: process.env.AWS_REGION || "eu-west-3" });
@@ -51,6 +52,15 @@ export async function updateParameters(parameters) {
             console.error(`Erreur lors de la mise à jour du paramètre ${param.name}:`, error);
             results.push({ name: param.name, status: "error", error: error.message });
         }
+    }
+
+    // Launch pipeline to restart application ui
+    const codepipeline = new CodePipeline({});
+    const pipelineName = "ai-pulse-ui-pipeline";
+    try {
+        await codepipeline.startPipelineExecution({ name: pipelineName });
+    } catch (error) {
+        return { statusCode: 500, body: `Erreur: ${error.message}` };
     }
 
     return results;
